@@ -68,18 +68,31 @@ const Game = () => {
         setPlayerTurn(playerTurn === PLAYERS.White ? PLAYERS.Black : PLAYERS.White);
     }
 
-    const updateMoveList = (src, dest) => {
-        let moveString = getPieceName(gameBoard[src.r][src.c]);
+    const updateMoveList = (board, src, dest) => {
+        let moveString = getPieceName(board[src.r][src.c]);
 
-        if (gameBoard[dest.r][dest.c] !== null) {
-            if (gameBoard[src.r][src.c] instanceof Pawn) {
+        if (isCaptureMove(board, dest)) {
+            if (board[src.r][src.c] instanceof Pawn) {
                 moveString += String.fromCharCode(97 + src.c);
             }
 
             moveString += "x";
         }
+        else if (isCastleMove(board, src, dest)) {
+            setMoveList(moveList => [...moveList, dest.c > src.c ? "O-O" : "O-O-O"]);
+            
+            return;
+        }
 
         setMoveList(moveList => [...moveList, moveString + String.fromCharCode(97 + dest.c) + (8 - dest.r)]); 
+    }
+
+    const isCaptureMove = (board, targetPosition) => {
+        return (board[targetPosition.r][targetPosition.c] !== null);
+    }
+
+    const isCastleMove = (board, src, dest) => {
+        return (board[src.r][src.c] instanceof King && Math.abs(dest.c - src.c) === 2 && dest.r === src.r);
     }
 
     const onPieceMove = (position) => {
@@ -87,11 +100,18 @@ const Game = () => {
             let targetPosition = { r: position.r + activePieceOffset.r, c: position.c + activePieceOffset.c };
 
             if (gameBoard[position.r][position.c].isValidMove(gameBoard, position, targetPosition)) {
-                if (gameBoard[targetPosition.r][targetPosition.c] !== null) {
-                    addCapturedPiece(gameBoard[targetPosition.r][targetPosition.c])
+                if (isCaptureMove(gameBoard, targetPosition)) {
+                    addCapturedPiece(gameBoard[targetPosition.r][targetPosition.c]);
+                }
+                else if (isCastleMove(gameBoard, position, targetPosition)) {
+                    let positionC = targetPosition.c > position.c ? 7 : 0;
+                    let targetPositionC = targetPosition.c > position.c ? targetPosition.c - 1 : targetPosition.c + 1;
+
+                    movePiece(gameBoard, { r: position.r, c: positionC }, { r: targetPosition.r, c: targetPositionC });
+                    gameBoard[targetPosition.r][targetPositionC].setHasMoved(true);
                 }
 
-                updateMoveList(position, targetPosition);
+                updateMoveList(gameBoard, position, targetPosition);
                 movePiece(gameBoard, position, targetPosition);            
             }  
         }    
