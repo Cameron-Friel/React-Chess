@@ -21,6 +21,20 @@ html, body {
   padding-bottom: 16px;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--text-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #8c8c8c;
+  border: 3px solid#8c8c8c;
+}
+
 .game-container {
   display: flex;
   justify-content: center;
