@@ -5,7 +5,7 @@ const Square = ({ squareColor, imageUrl, onClick, currentPosition }) => {
     const image = () => {
         if (imageUrl !== null) {
             return (
-                <Draggable startingCoordiantes={{ x: 0, y: 0 }} currentPosition={currentPosition}>
+                <Draggable currentPosition={currentPosition}>
                     <img 
                         src={imageUrl || ""}
                         alt=""
