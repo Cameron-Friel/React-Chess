@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Board from './Board';
 import CapturedPieces from './CapturedPieces';
 import King from '../pieces/King';
@@ -28,8 +28,19 @@ const Game = () => {
     const [capturedBlackPieces, setCapturedBlackPieces] = useState([]);
 
     const [moveList, setMoveList] = useState([]);
+    const moveListRef = useRef();
 
     const [activePieceOffset, setActivePieceOffset] = useState(null);
+
+    useEffect(() => {
+        if (moveListRef.current) {
+            moveListRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "end",
+                inline: "end"
+            });
+        }
+    }, [moveList]);
 
     const getPieceName = (piece) => {
         switch(true) {
@@ -141,6 +152,7 @@ const Game = () => {
 
                 <div className="move-list">
                     {displayMoveList}
+                    <div ref={ moveListRef }></div>
                 </div>
 
                 <div className="player-info">
