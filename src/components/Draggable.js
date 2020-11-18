@@ -9,7 +9,6 @@ const Draggable = (props) => {
     useEffect(() => {
         const onMouseMove = (event) => {
             setPosition({ x: event.clientX - startingPosition.x, y: event.clientY - startingPosition.y });
-            //setPosition({x: position.x + event.clientX - startingPosition.x, y: position.y + event.clientY - startingPosition.y})
         }
 
         if (isDragging) {
